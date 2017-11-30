@@ -450,16 +450,15 @@ cdef class Matrix_integer_dense(Matrix_dense):
         """
         fmpz_set_d(fmpz_mat_entry(self._matrix,i,j), value)
 
-    def set_unsafe_from_numpy_int_array(self, values):
-        if values.shape != (self._nrows, self._ncols):
+    def set_unsafe_from_numpy_int_array(self, np.ndarray[np.int_t,ndim=2] values):
+        if values.shape[0] != self._nrows or values.shape[1] != self._ncols:
             raise ValueError, "Wrong shape numpy array"
-        cdef np.int_t [:,:] values_view = values
 
         cdef Py_ssize_t i,j
 
         for i in xrange(self._nrows):
             for j in xrange(self._ncols):
-                self.set_unsafe_si(i,j, values_view[i,j])
+                self.set_unsafe_si(i,j, values[i,j])
 
     cdef get_unsafe(self, Py_ssize_t i, Py_ssize_t j):
         """

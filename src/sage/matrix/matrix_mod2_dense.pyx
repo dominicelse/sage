@@ -404,16 +404,15 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
         """
         mzd_write_bit(self._entries, i, j, int(value))
 
-    def set_unsafe_from_numpy_int_array(self, values):
-        if values.shape != (self._nrows, self._ncols):
+    def set_unsafe_from_numpy_int_array(self, np.ndarray[np.int_t, ndim=2] values):
+        if values.shape[0] != self._nrows or values.shape[1] != self._ncols:
             raise ValueError, "Wrong shape numpy array"
-        cdef np.int_t [:,:] values_view = values
 
         cdef Py_ssize_t i,j
 
         for i in xrange(self._nrows):
             for j in xrange(self._ncols):
-                self.set_unsafe_int(i,j, 1 if values_view[i,j] % 2 else 0)
+                self.set_unsafe_int(i,j, 1 if values[i,j] % 2 else 0)
 
     cdef set_unsafe(self, Py_ssize_t i, Py_ssize_t j, value):
         mzd_write_bit(self._entries, i, j, int(value))
