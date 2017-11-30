@@ -135,6 +135,8 @@ cdef extern from "gd.h":
     void gdImageFilledRectangle(gdImagePtr im, int x1, int y1, int x2, int y2, int color)
     void gdFree(void *m)
 
+cimport numpy as np
+
 ## from sage.libs.linbox.linbox cimport Linbox_mod2_dense
 ## cdef Linbox_mod2_dense linbox
 ## linbox = Linbox_mod2_dense()
@@ -204,7 +206,7 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
             mzd_free(self._entries)
             self._entries = NULL
 
-    def __init__(self, parent, entries, copy, coerce):
+    def __init__(self, parent, entries, copy, coerce, entries_as_numpy_array=False):
         """
         Dense matrix over GF(2) constructor.
 
@@ -401,6 +403,17 @@ cdef class Matrix_mod2_dense(matrix_dense.Matrix_dense):   # dense or sparse
         Set the (i,j) entry of self to the int value.
         """
         mzd_write_bit(self._entries, i, j, int(value))
+
+    def set_unsafe_from_numpy_int_array(self, values):
+        if values.shape != (self._nrows, self._ncols):
+            raise ValueError, "Wrong shape numpy array"
+        cdef np.int_t [:,:] values_view = values
+
+        cdef Py_ssize_t i,j
+
+        for i in xrange(self._nrows):
+            for j in xrange(self._ncols):
+                self.set_unsafe_int(i,j, 1 if values_view[i,j] % 2 else 0)
 
     cdef set_unsafe(self, Py_ssize_t i, Py_ssize_t j, value):
         mzd_write_bit(self._entries, i, j, int(value))
