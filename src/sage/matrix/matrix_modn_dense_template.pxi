@@ -125,6 +125,8 @@ import sage.matrix.matrix_space as matrix_space
 cdef long num = 1
 cdef bint little_endian = (<char*>(&num))[0]
 
+cimport numpy as np
+
 cdef inline celement_invert(celement a, celement n):
     """
     Invert the finite field element `a` modulo `n`.
@@ -3066,6 +3068,17 @@ cdef class Matrix_modn_dense_template(Matrix_dense):
                 L.set_unsafe_double(i, j, A_row[j])
         L.subdivide(self.subdivisions())
         return L
+
+    def set_unsafe_from_numpy_int_array(self, values):
+        if values.shape != (self._nrows, self._ncols):
+            raise ValueError, "Wrong shape numpy array"
+        cdef np.int_t [:,:] values_view = values
+
+        cdef Py_ssize_t i,j
+
+        for i in xrange(self._nrows):
+            for j in xrange(self._ncols):
+                self.set_unsafe_int(i,j, values_view[i,j])
 
     def transpose(self):
         """
