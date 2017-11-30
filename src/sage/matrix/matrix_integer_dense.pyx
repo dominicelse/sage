@@ -69,6 +69,8 @@ from cysignals.memory cimport sig_malloc, sig_free, check_malloc
 
 from sage.libs.gmp.mpz cimport *
 
+cimport numpy as np
+
 from sage.modules.vector_integer_dense cimport Vector_integer_dense
 
 from sage.misc.misc import verbose, get_verbose, cputime
@@ -447,6 +449,17 @@ cdef class Matrix_integer_dense(Matrix_dense):
         Set position i,j of this matrix to ``value``.
         """
         fmpz_set_d(fmpz_mat_entry(self._matrix,i,j), value)
+
+    def set_unsafe_from_numpy_int_array(self, values):
+        if values.shape != (self._nrows, self._ncols):
+            raise ValueError, "Wrong shape numpy array"
+        cdef np.int_t [:,:] values_view = values
+
+        cdef Py_ssize_t i,j
+
+        for i in xrange(self._nrows):
+            for j in xrange(self._ncols):
+                self.set_unsafe_si(i,j, values_view[i,j])
 
     cdef get_unsafe(self, Py_ssize_t i, Py_ssize_t j):
         """
