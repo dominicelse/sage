@@ -691,9 +691,9 @@ def random_vector(ring, degree=None, *args, **kwds):
 
     INPUT:
 
-    - ring - default: ``ZZ`` - the base ring for the entries
-    - degree - a non-negative integer for the number of entries in the vector
-    - sparse - default: ``False`` - whether to use a sparse implementation
+    - ring -- default: ``ZZ`` - the base ring for the entries
+    - degree -- a non-negative integer for the number of entries in the vector
+    - sparse -- default: ``False`` - whether to use a sparse implementation
     - args, kwds - additional arguments and keywords are passed
       to the ``random_element()`` method of the ring
 
@@ -2671,7 +2671,7 @@ cdef class FreeModuleElement(Vector):   # abstract base class
         and also `w \cdot \hat{v} = w \times v` for all vectors `w`.
         The basis vectors are assumed to be orthonormal.
 
-        .. _hat operator: http://en.wikipedia.org/wiki/Hat_operator#Cross_product
+        .. _hat operator: :wikipedia:`Hat_operator#Cross_product`
 
         OUTPUT:
 
@@ -2803,28 +2803,28 @@ cdef class FreeModuleElement(Vector):   # abstract base class
 
             sage: parent(vector(QQ,[1,2,3,4]).pairwise_product(vector(ZZ['x'],[1,2,3,4])))
             Ambient free module of rank 4 over the principal ideal domain Univariate Polynomial Ring in x over Rational Field
-            sage: parent(vector(ZZ[x],[1,2,3,4]).pairwise_product(vector(QQ,[1,2,3,4])))
+            sage: parent(vector(ZZ['x'],[1,2,3,4]).pairwise_product(vector(QQ,[1,2,3,4])))
             Ambient free module of rank 4 over the principal ideal domain Univariate Polynomial Ring in x over Rational Field
 
         ::
 
             sage: parent(vector(QQ,[1,2,3,4]).pairwise_product(vector(ZZ['x']['y'],[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
-            sage: parent(vector(ZZ[x][y],[1,2,3,4]).pairwise_product(vector(QQ,[1,2,3,4])))
+            sage: parent(vector(ZZ['x']['y'],[1,2,3,4]).pairwise_product(vector(QQ,[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
 
         ::
 
             sage: parent(vector(QQ['x'],[1,2,3,4]).pairwise_product(vector(ZZ['x']['y'],[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
-            sage: parent(vector(ZZ[x][y],[1,2,3,4]).pairwise_product(vector(QQ['x'],[1,2,3,4])))
+            sage: parent(vector(ZZ['x']['y'],[1,2,3,4]).pairwise_product(vector(QQ['x'],[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
 
         ::
 
             sage: parent(vector(QQ['y'],[1,2,3,4]).pairwise_product(vector(ZZ['x']['y'],[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
-            sage: parent(vector(ZZ[x][y],[1,2,3,4]).pairwise_product(vector(QQ['y'],[1,2,3,4])))
+            sage: parent(vector(ZZ['x']['y'],[1,2,3,4]).pairwise_product(vector(QQ['y'],[1,2,3,4])))
             Ambient free module of rank 4 over the integral domain Univariate Polynomial Ring in y over Univariate Polynomial Ring in x over Rational Field
 
         ::

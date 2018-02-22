@@ -56,6 +56,8 @@ from .number_field_element_quadratic import OrderElement_quadratic
 
 from sage.rings.monomials import monomials
 
+from sage.libs.pari.all import pari
+
 
 def is_NumberFieldOrder(R):
     r"""
@@ -783,16 +785,26 @@ class Order(IntegralDomain):
             1
             sage: QQ[sqrt(-23)].maximal_order().class_number()
             3
+            sage: ZZ[120*sqrt(-23)].class_number()
+            288
 
-        Note that non-maximal orders aren't supported yet::
+        Note that non-maximal orders are only supported in quadratic fields::
 
-            sage: ZZ[3*sqrt(-3)].class_number()
+            sage: ZZ[120*sqrt(-23)].class_number()
+            288
+            sage: ZZ[100*sqrt(3)].class_number()
+            4
+            sage: ZZ[11*2^(1/3)].class_number()
             Traceback (most recent call last):
             ...
-            NotImplementedError: computation of class numbers of non-maximal orders is not implemented
+            NotImplementedError: computation of class numbers of non-maximal orders not in quadratic fields is not implemented
+
         """
         if not self.is_maximal():
-            raise NotImplementedError("computation of class numbers of non-maximal orders is not implemented")
+            K = self.number_field()
+            if K.degree() != 2:
+                raise NotImplementedError("computation of class numbers of non-maximal orders not in quadratic fields is not implemented")
+            return ZZ(pari.qfbclassno(self.discriminant()))
         return self.number_field().class_number(proof=proof)
 
     def class_group(self, proof=None, names='c'):
@@ -991,6 +1003,44 @@ class Order(IntegralDomain):
         """
         return self.number_field().absolute_degree()
 
+    def some_elements(self):
+        """
+        Return a list of elements of the given order.
+
+        EXAMPLES::
+
+            sage: G = GaussianIntegers(); G
+            Gaussian Integers in Number Field in I with defining polynomial x^2 + 1
+            sage: G.some_elements()
+            [1, I, 2*I, -1, 0, -I, 2, 4*I, -2, -2*I, -4]
+
+            sage: R.<t> = QQ[]
+            sage: K.<a> = QQ.extension(t^3 - 2); K
+            Number Field in a with defining polynomial t^3 - 2
+            sage: Z = K.ring_of_integers(); Z
+            Maximal Order in Number Field in a with defining polynomial t^3 - 2
+            sage: Z.some_elements()
+            [1, a, a^2, 2*a, 0, 2, a^2 + 2*a + 1, ..., a^2 + 1, 2*a^2 + 2, a^2 + 2*a, 4*a^2 + 4]
+
+        TESTS:
+
+        This also works for trivial extensions::
+        
+            sage: R.<t> = QQ[]
+            sage: K.<a> = QQ.extension(t); K
+            Number Field in a with defining polynomial t
+            sage: Z = K.ring_of_integers(); Z
+            Maximal Order in Number Field in a with defining polynomial t
+            sage: Z.some_elements()
+            [1, 0, 2, -1, -2, 4]
+
+        """
+        elements = list(self.basis())
+        for a in self.fraction_field().some_elements():
+            if a in self and a not in elements:
+                elements.append(self(a))
+        return elements
+
 ##     def absolute_polynomial(self):
 ##         """
 ##         Returns the absolute polynomial of this order, which is just the absolute polynomial of the number field.
@@ -1053,8 +1103,6 @@ class AbsoluteOrder(Order):
         Quadratic elements have a special optimized type:
 
         """
-        Order.__init__(self, K, is_maximal=is_maximal)
-
         if K.degree() == 2:
             self._element_type = OrderElement_quadratic
             # adding the following attribute makes the comparison of elements
@@ -1064,7 +1112,9 @@ class AbsoluteOrder(Order):
             self._element_type = OrderElement_absolute
 
         self._module_rep = module_rep
-        V, from_v, to_v = self._K.vector_space()
+        V, from_v, to_v = K.vector_space()
+        Order.__init__(self, K, is_maximal=is_maximal)
+
         if check:
             if not K.is_absolute():
                 raise ValueError("AbsoluteOrder must be called with an absolute number field.")
@@ -1219,6 +1269,7 @@ class AbsoluteOrder(Order):
             return D
 
     absolute_discriminant = discriminant
+
 
     def change_names(self, names):
         """
@@ -1411,7 +1462,6 @@ class AbsoluteOrder(Order):
         """
         return self
 
-
 class RelativeOrder(Order):
     """
     A relative order in a number field.
@@ -1435,9 +1485,9 @@ class RelativeOrder(Order):
             sage: loads(dumps(O)) == O
             True
         """
-        Order.__init__(self, K, is_maximal=is_maximal)
         self._absolute_order = absolute_order
         self._module_rep = absolute_order._module_rep
+        Order.__init__(self, K, is_maximal=is_maximal)
 
     def _element_constructor_(self, x):
         """

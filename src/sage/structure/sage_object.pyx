@@ -235,8 +235,8 @@ cdef class SageObject:
             return str(type(self))
         else:
             result = repr_func()
-            if isinstance(result, unicode):
-                # Py3 compatibility: allow _repr_ to return unicode
+            if sys.version_info[0] < 3 and isinstance(result, unicode):
+                # for Py3 compatibility: allow _repr_ to return unicode
                 return result.encode('utf-8')
             else:
                 return result
@@ -501,24 +501,6 @@ cdef class SageObject:
             return comp.compress(s)
         else:
             return s
-
-    def db(self, name, compress=True):
-        r"""
-        Dumps self into the Sage database.  Use db(name) by itself to
-        reload.
-
-        The database directory is ``$HOME/.sage/db``
-
-        TESTS::
-
-            sage: SageObject().db("Test")
-            doctest:... DeprecationWarning: db() is deprecated.
-            See http://trac.sagemath.org/2536 for details.
-        """
-        from sage.misc.superseded import deprecation
-        deprecation(2536, 'db() is deprecated.')
-        from sage.misc.all import SAGE_DB
-        return self.dump('%s/%s'%(SAGE_DB,name), compress=compress)
 
     #############################################################################
     # Category theory / structure
@@ -1093,7 +1075,7 @@ def load(*filename, compress=True, verbose=True):
         pass
 
     ## Delete the tempfile, if it exists
-    if tmpfile_flag == True:
+    if tmpfile_flag:
         os.unlink(filename)
 
     return X
@@ -1283,8 +1265,10 @@ def register_unpickle_override(module, name, callable, call_name=None):
         ....:             self._set_parent(Tableaux())  # this is a fudge: we need an appropriate parent here
         ....:             self.__dict__ = state
         ....:         else:
-        ....:             self._set_parent(state[0])
-        ....:             self.__dict__ = state[1]
+        ....:             P, D = state
+        ....:             if P is not None:
+        ....:                 self._set_parent(P)
+        ....:             self.__dict__ = D
         sage: __main__.SweeterPickle = SweeterPickle
         sage: register_unpickle_override('__main__','SourPickle',SweeterPickle)
         sage: loads( gherkin )

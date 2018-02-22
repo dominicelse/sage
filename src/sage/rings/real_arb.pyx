@@ -163,7 +163,7 @@ TESTS::
     Full MatrixSpace of 3 by 3 dense matrices over Real ball field
     with 53 bits precision
 
-    sage: polygen(RBF, x)^3
+    sage: polygen(RBF, 'x')^3
     x^3
 
 ::
@@ -188,6 +188,7 @@ Classes and Methods
 # (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
+from __future__ import absolute_import
 
 from cysignals.signals cimport sig_on, sig_str, sig_off
 
@@ -374,7 +375,7 @@ class RealBallField(UniqueRepresentation, Field):
 
     ::
 
-        sage: (1/2*RBF(1)) + AA(sqrt(2)) - 1 + polygen(QQ, x)
+        sage: (1/2*RBF(1)) + AA(sqrt(2)) - 1 + polygen(QQ, 'x')
         x + [0.914213562373095 +/- 4.10e-16]
 
     TESTS::
@@ -1868,7 +1869,7 @@ cdef class RealBall(RingElement):
         EXAMPLES::
 
             sage: RBF(0).union(1).endpoints()
-            (0.000000000000000, 1.00000000000000)
+            (-9.31322574615479e-10, 1.00000000093133)
         """
         cdef RealBall my_other = self._parent.coerce(other)
         cdef RealBall res = self._new()
@@ -3420,7 +3421,7 @@ cdef class RealBall(RingElement):
             sage: RBF(-1).zeta(1)
             [-0.0833333333333333 +/- 4.26e-17]
             sage: RBF(-1).zeta(2)
-            [-1.083333333333333 +/- 4.08e-16]
+            [-1.083333333333333 +/- 4.96e-16]
         """
         cdef RealBall a_ball
         cdef RealBall res = self._new()
@@ -3457,7 +3458,7 @@ cdef class RealBall(RingElement):
         TESTS::
 
             sage: RBF(1/3).polylog(2r)
-            [0.36621322997706 +/- 4.62e-15]
+            [0.366213229977063 +/- 5.85e-16]
         """
         cdef RealBall s_as_ball
         cdef Integer s_as_Integer
