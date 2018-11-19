@@ -396,22 +396,22 @@ class Category(UniqueRepresentation, SageObject):
         sage: loads(dumps(Ds().element_class)) is Ds().element_class
         True
 
-    .. automethod:: _super_categories
-    .. automethod:: _super_categories_for_classes
-    .. automethod:: _all_super_categories
-    .. automethod:: _all_super_categories_proper
-    .. automethod:: _set_of_super_categories
-    .. automethod:: _make_named_class
-    .. automethod:: _repr_
-    .. automethod:: _repr_object_names
-    .. automethod:: _test_category
-    .. automethod:: _with_axiom
-    .. automethod:: _with_axiom_as_tuple
-    .. automethod:: _without_axioms
-    .. automethod:: _sort
-    .. automethod:: _sort_uniq
-    .. automethod:: __classcall__
-    .. automethod:: __init__
+    .. automethod:: Category._super_categories
+    .. automethod:: Category._super_categories_for_classes
+    .. automethod:: Category._all_super_categories
+    .. automethod:: Category._all_super_categories_proper
+    .. automethod:: Category._set_of_super_categories
+    .. automethod:: Category._make_named_class
+    .. automethod:: Category._repr_
+    .. automethod:: Category._repr_object_names
+    .. automethod:: Category._test_category
+    .. automethod:: Category._with_axiom
+    .. automethod:: Category._with_axiom_as_tuple
+    .. automethod:: Category._without_axioms
+    .. automethod:: Category._sort
+    .. automethod:: Category._sort_uniq
+    .. automethod:: Category.__classcall__
+    .. automethod:: Category.__init__
     """
     @staticmethod
     def __classcall__(cls, *args, **options):
@@ -1315,7 +1315,7 @@ class Category(UniqueRepresentation, SageObject):
 
     @cached_method
     def full_super_categories(self):
-        """
+        r"""
         Return the *immediate* full super categories of ``self``.
 
         .. SEEALSO::
@@ -1400,8 +1400,8 @@ class Category(UniqueRepresentation, SageObject):
 
         """
         tester = self._tester(**options)
-        tester.assert_(self.parent_class.mro() == [C.parent_class for C in self._all_super_categories] + [object])
-        tester.assert_(self.element_class.mro() == [C.element_class for C in self._all_super_categories] + [object])
+        tester.assertTrue(self.parent_class.mro() == [C.parent_class for C in self._all_super_categories] + [object])
+        tester.assertTrue(self.element_class.mro() == [C.element_class for C in self._all_super_categories] + [object])
 
     def _test_category(self, **options):
         r"""
@@ -1442,26 +1442,26 @@ class Category(UniqueRepresentation, SageObject):
         from sage.categories.objects    import Objects
         from sage.categories.sets_cat import Sets
         tester = self._tester(**options)
-        tester.assert_(isinstance(self.super_categories(), list),
+        tester.assertTrue(isinstance(self.super_categories(), list),
                        "%s.super_categories() should return a list"%self)
-        tester.assert_(self.is_subcategory(Objects()),
+        tester.assertTrue(self.is_subcategory(Objects()),
                        "%s is not a subcategory of Objects()"%self)
-        tester.assert_(isinstance(self.parent_class, type))
-        tester.assert_(all(not isinstance(cat, JoinCategory) for cat in self._super_categories))
+        tester.assertTrue(isinstance(self.parent_class, type))
+        tester.assertTrue(all(not isinstance(cat, JoinCategory) for cat in self._super_categories))
         if not isinstance(self, JoinCategory):
-            tester.assert_(all(self._cmp_key > cat._cmp_key      for cat in self._super_categories))
-        tester.assert_(self.is_subcategory( Category.join(self.super_categories()) )) # Not an obviously passing test with axioms
+            tester.assertTrue(all(self._cmp_key > cat._cmp_key      for cat in self._super_categories))
+        tester.assertTrue(self.is_subcategory( Category.join(self.super_categories()) )) # Not an obviously passing test with axioms
 
         for category in self._all_super_categories_proper:
             if self.is_full_subcategory(category):
-                tester.assert_(any(cat.is_subcategory(category)
+                tester.assertTrue(any(cat.is_subcategory(category)
                                    for cat in self.full_super_categories()),
                                "Every full super category should be a super category"
                                "of some immediate full super category")
 
         if self.is_subcategory(Sets()):
-            tester.assert_(isinstance(self.parent_class, type))
-            tester.assert_(isinstance(self.element_class, type))
+            tester.assertTrue(isinstance(self.parent_class, type))
+            tester.assertTrue(isinstance(self.element_class, type))
 
     _cmp_key = _cmp_key
 
@@ -1738,7 +1738,7 @@ class Category(UniqueRepresentation, SageObject):
 
         This class contains the methods defined in the nested class
         ``self.MorphismMethods`` (if it exists), and has as bases the
-        morphims classes of the super categories of ``self``.
+        morphism classes of the super categories of ``self``.
 
         .. SEEALSO::
 
@@ -2214,7 +2214,7 @@ class Category(UniqueRepresentation, SageObject):
         """
         return self
 
-    _flatten_categories = _flatten_categories
+    _flatten_categories = staticmethod(_flatten_categories)  # a cythonised helper
 
     @staticmethod
     def _sort(categories):
@@ -2263,7 +2263,7 @@ class Category(UniqueRepresentation, SageObject):
         """
         return tuple(sorted(categories, key=category_sort_key, reverse=True))
 
-    _sort_uniq = _sort_uniq   # a cythonised helper
+    _sort_uniq = staticmethod(_sort_uniq)  # a cythonised helper
 
     def __and__(self, other):
         """
@@ -2701,7 +2701,7 @@ class CategoryWithParameters(Category):
         sage: C1.parent_class is C3.parent_class
         False
 
-    .. automethod:: _make_named_class
+    .. automethod:: Category._make_named_class
     """
 
     def _make_named_class(self, name, method_provider, cache = False, **options):
@@ -2927,9 +2927,9 @@ class JoinCategory(CategoryWithParameters):
         sage: type(A3) is type(A5)
         True
 
-    .. automethod:: _repr_object_names
-    .. automethod:: _repr_
-    .. automethod:: _without_axioms
+    .. automethod:: Category._repr_object_names
+    .. automethod:: Category._repr_
+    .. automethod:: Category._without_axioms
     """
 
     def __init__(self, super_categories, **kwds):

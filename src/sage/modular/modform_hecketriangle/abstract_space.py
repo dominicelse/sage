@@ -121,7 +121,7 @@ class FormsSpace_abstract(FormsRing_abstract):
         """
 
         from sage.misc.latex import latex
-        return "{}_{{ n={} }}({},\ {})({})".format(self._analytic_type.latex_space_name(), self._group.n(), self._weight, self._ep, latex(self._base_ring))
+        return r"{}_{{ n={} }}({},\ {})({})".format(self._analytic_type.latex_space_name(), self._group.n(), self._weight, self._ep, latex(self._base_ring))
 
     def _element_constructor_(self, el):
         r"""
@@ -1155,7 +1155,7 @@ class FormsSpace_abstract(FormsRing_abstract):
     def F_basis_pol(self, m, order_1=ZZ(0)):
         r"""
         Returns a polynomial corresponding to the basis element of
-        the correponding space of weakly holomorphic forms of
+        the corresponding space of weakly holomorphic forms of
         the same degree as ``self``. The basis element is determined
         by the property that the Fourier expansion is of the form
         ``q^m + O(q^(order_inf + 1))``, where ``order_inf = self._l1 - order_1``.
@@ -1853,7 +1853,7 @@ class FormsSpace_abstract(FormsRing_abstract):
         for gen in basis:
             A = A.augment(gen.q_expansion_vector(min_exp=min_exp, max_exp=prec-1))
 
-        # So far this case never happened but potentiall A could be singular!
+        # So far this case never happened but potentially A could be singular!
         # In this case we want to increase the row size until A has maximal
         # rank (i.e. column size).
 

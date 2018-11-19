@@ -28,7 +28,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from sage.misc.cachefunc import cached_method
-from sage.matrix.matrix import is_Matrix
+from sage.structure.element import is_Matrix
 from sage.graphs.digraph import DiGraph
 from sage.combinat.root_system.cartan_type import CartanType, CartanType_abstract
 from sage.combinat.root_system.cartan_matrix import CartanMatrix
@@ -274,7 +274,7 @@ class DynkinDiagram_class(DiGraph, CartanType_abstract):
         elif t is not None:
             self.add_vertices(t.index_set())
 
-    def _repr_(self):
+    def _repr_(self, compact=False):
         """
         EXAMPLES::
 
@@ -367,10 +367,10 @@ class DynkinDiagram_class(DiGraph, CartanType_abstract):
 
             sage: from sage.combinat.root_system.dynkin_diagram import DynkinDiagram_class
             sage: d = DynkinDiagram_class(CartanType(['A',3]))
-            sage: list(sorted(d.edges()))
+            sage: sorted(d.edges())
             []
             sage: d.add_edge(2, 3)
-            sage: list(sorted(d.edges()))
+            sage: sorted(d.edges())
             [(2, 3, 1), (3, 2, 1)]
         """
         DiGraph.add_edge(self, i, j, label)

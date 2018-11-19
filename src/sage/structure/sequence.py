@@ -127,7 +127,7 @@ def Sequence(x, universe=None, check=True, immutable=False, cr=False, cr_str=Non
 
         sage: v = Sequence(range(10))
         sage: v.universe()
-        <... 'int'>
+        <type 'int'>
         sage: v
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -311,7 +311,7 @@ class Sequence_generic(sage.structure.sage_object.SageObject, list):
 
         sage: v = Sequence(range(10))
         sage: v.universe()
-        <... 'int'>
+        <type 'int'>
         sage: v
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -624,7 +624,7 @@ class Sequence_generic(sage.structure.sage_object.SageObject, list):
         INPUT:
 
         - ``key`` - see Python ``list sort``
-        
+
         - ``reverse`` - see Python ``list sort``
 
         EXAMPLES::
@@ -856,7 +856,7 @@ class Sequence_generic(sage.structure.sage_object.SageObject, list):
             Traceback (most recent call last):
             ...
             AttributeError: 'Sequence_generic' object has no attribute '_Sequence_generic__hash'
-            sage: S._Sequence__hash = 34
+            sage: S._Sequence__hash = int(34)
             sage: hash(S)
             34
         """
@@ -879,5 +879,5 @@ class Sequence_generic(sage.structure.sage_object.SageObject, list):
             raise AttributeError("'Sequence_generic' object has no attribute '%s'"%name)
 seq = Sequence
 
-from sage.structure.sage_object import register_unpickle_override
+from sage.misc.persist import register_unpickle_override
 register_unpickle_override('sage.structure.sequence', 'Sequence', Sequence_generic)

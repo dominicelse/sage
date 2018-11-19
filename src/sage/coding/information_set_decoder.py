@@ -137,7 +137,7 @@ class InformationSetAlgorithm(SageObject):
         Return the name of this ISD algorithm.
 
         EXAMPLES::
-        
+
             sage: C = codes.GolayCode(GF(2))
             sage: from sage.coding.information_set_decoder import LeeBrickellISDAlgorithm
             sage: A = LeeBrickellISDAlgorithm(C, (0,2))
@@ -315,7 +315,7 @@ class InformationSetAlgorithm(SageObject):
             True
         """
         return hash(str(self))
-        
+
     def _repr_(self):
         r"""
         Returns a string representation of this ISD algorithm.
@@ -354,8 +354,8 @@ class LeeBrickellISDAlgorithm(InformationSetAlgorithm):
     For a description of the information-set decoding paradigm (ISD), see
     :class:`sage.coding.information_set_decoder.LinearCodeInformationSetDecoder`.
 
-    This implements the Lee-Brickell variant of ISD, see [LB1988] for the
-    original binary case, and [Pet10] for the `q`-ary extension.
+    This implements the Lee-Brickell variant of ISD, see [LB1988]_ for the
+    original binary case, and [Pet2010]_ for the `q`-ary extension.
 
     Let `C` be a `[n, k]`-linear code over `GF(q)`, and let `r \in GF(q)^{n}` be
     a received word in a transmission. We seek the codeword whose Hamming
@@ -849,7 +849,7 @@ class LinearCodeInformationSetDecoder(Decoder):
         else:
             raise ValueError("Unknown ISD algorithm '{}'."
                             " The known algorithms are {}."\
-                            .format(algorithm, algorithm_names.keys()))
+                            .format(algorithm, sorted(algorithm_names)))
 
     _known_algorithms = {
         "Lee-Brickell": LeeBrickellISDAlgorithm

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-L-series for elliptic curves
+`L`-series for elliptic curves
 
 AUTHORS:
 
@@ -25,9 +25,9 @@ from six.moves import range
 
 from sage.structure.sage_object import SageObject
 from sage.rings.all import RealField, RationalField
-from math import sqrt, exp, log, ceil
+from math import sqrt, log, ceil
 import sage.functions.exp_integral as exp_integral
-import sage.misc.all as misc
+from sage.misc.all import verbose
 
 class Lseries_ell(SageObject):
     """
@@ -161,7 +161,6 @@ class Lseries_ell(SageObject):
                        eps = self.__E.root_number(),
                        poles = [],
                        prec = prec)
-        gp = L.gp()
         s = 'e = ellinit(%s);'%list(self.__E.minimal_model().a_invariants())
         s += 'a(k) = ellak(e, k);'
         L.init_coeffs('a(k)', 1, pari_precode = s,
@@ -521,7 +520,7 @@ class Lseries_ell(SageObject):
         Rerror = RealField(24, rnd='RNDU')
 
         if self.__E.root_number() == -1:
-           return (R.zero(), Rerror.zero())
+            return (R.zero(), Rerror.zero())
 
         an = self.__E.anlist(k)  # list of Sage Integers
         pi = R.pi()
@@ -673,9 +672,9 @@ class Lseries_ell(SageObject):
         Rerror = RealField(24, rnd='RNDU')
 
         if self.__E.root_number() == 1:
-           # Order of vanishing at 1 of L(E) is even and assumed to be
-           # positive, so L'(E,1) = 0.
-           return (R.zero(), Rerror.zero())
+            # Order of vanishing at 1 of L(E) is even and assumed to be
+            # positive, so L'(E,1) = 0.
+            return (R.zero(), Rerror.zero())
 
         an = self.__E.anlist(k)  # list of Sage Integers
         pi = R.pi()
@@ -877,7 +876,7 @@ class Lseries_ell(SageObject):
                 self.__lratio = quo / self.__E.real_components()
                 return self.__lratio
             k += sqrtN
-            misc.verbose("Increasing precision to %s terms."%k)
+            verbose("Increasing precision to %s terms." % k)
 
     def zero_sums(self, N=None):
         r"""

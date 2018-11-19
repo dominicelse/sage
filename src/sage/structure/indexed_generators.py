@@ -11,9 +11,8 @@ Indexed Generators
 # (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-from sage.rings.all import Integer
 from sage.structure.category_object import normalize_names
+
 
 class IndexedGenerators(object):
     r"""nodetex
@@ -355,7 +354,7 @@ class IndexedGenerators(object):
         """
         from sage.typeset.ascii_art import AsciiArt, ascii_art
         pref = AsciiArt([self.prefix()])
-        r = pref * (AsciiArt([" "**Integer(len(pref))]) + ascii_art(m))
+        r = pref * (AsciiArt([" " * len(pref)]) + ascii_art(m))
         r._baseline = r._h - 1
         return r
 
@@ -385,7 +384,7 @@ class IndexedGenerators(object):
         """
         from sage.typeset.unicode_art import UnicodeArt, unicode_art
         pref = UnicodeArt([self.prefix()])
-        r = pref * (UnicodeArt([" " ** Integer(len(pref))]) + unicode_art(m))
+        r = pref * (UnicodeArt([" " * len(pref)]) + unicode_art(m))
         r._baseline = r._h - 1
         return r
 

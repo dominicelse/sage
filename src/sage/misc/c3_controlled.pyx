@@ -346,7 +346,8 @@ doctest::
      Category of finite dimensional hopf algebras with basis over Rational Field,
      Category of finite enumerated permutation groups,
      Category of finite weyl groups,
-     Category of group algebras over Rational Field]
+     Category of group algebras over Rational Field,
+     Category of number fields]
 
 AUTHOR:
 
@@ -1126,7 +1127,7 @@ class HierarchyElement(object, metaclass=ClasscallMetaclass):
         The bases of ``self``.
 
         The bases are given as a list of ``HierarchyElement``s, sorted
-        decreasingly accoding to the ``key`` function.
+        decreasingly according to the ``key`` function.
 
         EXAMPLES::
 

@@ -379,7 +379,7 @@ Test the ``--debug`` option::
         s...: b = 5
         s...: a + b
         8
-    In [1]:
+    sage:
     <BLANKLINE>
     Returning to doctests...
     **********************************************************************
@@ -397,7 +397,7 @@ Test running under gdb, without and with a timeout::
     sage: subprocess.call(["sage", "-t",  "--warn-long", "0", "--gdb", "1second.rst"], stdin=open(os.devnull), **kwds)  # long time, optional: gdb
     exec gdb ...
     Running doctests...
-    Doctesting 1 file.
+    Doctesting 1 file...
     sage -t... 1second.rst...
         [2 tests, ... s]
     ----------------------------------------------------------------------
@@ -495,4 +495,16 @@ Test ``atexit`` support in the doctesting framework::
     ....:     os.unlink(F)
     ....: except OSError:
     ....:     pass
+
+Test the ``--memlimit`` option and ``# optional - memlimit``
+(but only on Linux)::
+
+    sage: from platform import system
+    sage: ok = True
+    sage: if system() == "Linux":
+    ....:     P = subprocess.Popen(["sage", "-t", "--warn-long", "0", "--memlimit=2000", "memlimit.rst"], stdout=subprocess.PIPE, **kwds)
+    ....:     out, err = P.communicate()
+    ....:     ok = ("MemoryError: failed to allocate" in out)
+    sage: ok or out
+    True
 """
