@@ -2,7 +2,7 @@
 `p`-Adic ``ZZ_pX`` CR Element
 
 This file implements elements of Eisenstein and unramified extensions
-of `\mathbb{Z}_p` and `\mathbb{Q}_p` with capped relative precision.
+of `\ZZ_p` and `\QQ_p` with capped relative precision.
 
 For the parent class see padic_extension_leaves.pyx.
 
@@ -34,7 +34,7 @@ element contains the following data:
   ntl modulus determined by the absolute value of ``relprec``.  If
   ``relprec`` is 0, ``unit`` **is not initialized**, or destructed if
   normalized and found to be zero.  Otherwise, let `r` be relprec and
-  `e` be the ramification index over `\mathbb{Q}_p` or `\mathbb{Z}_p`.
+  `e` be the ramification index over `\QQ_p` or `\ZZ_p`.
   Then the modulus of unit is given by `p^{ceil(r/e)}`.  Note that all
   kinds of problems arise if you try to mix moduli.
   ``ZZ_pX_conv_modulus`` gives a semi-safe way to convert between
@@ -228,7 +228,7 @@ cdef class pAdicZZpXCRElement(pAdicZZpXElement):
     def __init__(self, parent, x, absprec = infinity, relprec = infinity, empty = False):
         """
         Creates an element of a capped relative precision, unramified
-        or Eisenstein extension of `\mathbb{Z}_p` or `\mathbb{Q}_p`.
+        or Eisenstein extension of `\ZZ_p` or `\QQ_p`.
 
         INPUT:
 
@@ -1841,7 +1841,7 @@ cdef class pAdicZZpXCRElement(pAdicZZpXElement):
 
         In computing `(a + O(\pi^k))^{b + O(p^m)}`, one needs that the
         reduction of `a` mod `\pi` is in the prime field
-        `\mathbb{F}_p` (so that the `p^m` power of the Teichmuller
+        `\GF{p}` (so that the `p^m` power of the Teichmuller
         part is constant as `m` increases).  Given this restriction,
         we can factor out the Teichmuller part and use the above lemma
         to find the first spot where
@@ -2901,7 +2901,7 @@ cdef class pAdicZZpXCRElement(pAdicZZpXElement):
             [a + (2*a^3 + 2*a^2 + 3*a + 4)*5 + (4*a^3 + 3*a^2 + 3*a + 2)*5^2 + (4*a^2 + 2*a + 2)*5^3 + O(5^4), (3*a^3 + 3*a^2 + 2*a + 1) + (a^3 + 4*a^2 + 1)*5 + (a^2 + 4*a + 4)*5^2 + O(5^3), (4*a^3 + 2*a^2 + a + 1) + (2*a^3 + 2*a^2 + 2*a + 4)*5 + O(5^2), (a^3 + a^2 + a + 4) + O(5)]
             sage: sum([c * 5^i for i, c in enumerate(E)])
             a + O(5^4)
-            sage: all([c^625 == c for c in E])
+            sage: all(c^625 == c for c in E)
             True
 
             sage: S.<x> = ZZ[]
@@ -2911,7 +2911,7 @@ cdef class pAdicZZpXCRElement(pAdicZZpXElement):
             [1 + O(w^9), 5 + 5*w^3 + w^6 + 4*w^7 + O(w^8), 3 + 3*w^3 + O(w^7), 3 + 3*w^3 + O(w^6), O(w^5), 4 + 5*w^3 + O(w^4), 3 + O(w^3), 6 + O(w^2), 6 + O(w)]
             sage: sum([w^i*L[i] for i in range(9)]) == b
             True
-            sage: all([L[i]^(7^3) == L[i] for i in range(9)])
+            sage: all(L[i]^(7^3) == L[i] for i in range(9))
             True
 
             sage: L = W(3).teichmuller_expansion(); L

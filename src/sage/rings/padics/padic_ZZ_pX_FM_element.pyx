@@ -2,7 +2,7 @@
 `p`-Adic ``ZZ_pX`` FM Element
 
 This file implements elements of Eisenstein and unramified extensions
-of `\mathbb{Z}_p` with fixed modulus precision.
+of `\ZZ_p` with fixed modulus precision.
 
 For the parent class see ``padic_extension_leaves.pyx``.
 
@@ -150,7 +150,7 @@ cdef class pAdicZZpXFMElement(pAdicZZpXElement):
     def __init__(self, parent, x, absprec=None, relprec=None, empty=False):
         """
         Creates an element of a fixed modulus, unramified or
-        eisenstein extension of `\mathbb{Z}_p` or `\mathbb{Q}_p`.
+        eisenstein extension of `\ZZ_p` or `\QQ_p`.
 
         INPUT:
 
@@ -1050,8 +1050,8 @@ cdef class pAdicZZpXFMElement(pAdicZZpXElement):
 
         If `K` is given then `K` must be a subfield of the parent `L` of
         ``self``, in which case the norm is the relative norm from `L` to `K`.
-        In all other cases, the norm is the absolute norm down to `\mathbb{Q}_p`
-        or `\mathbb{Z}_p`.
+        In all other cases, the norm is the absolute norm down to `\QQ_p`
+        or `\ZZ_p`.
 
         EXAMPLES::
 
@@ -1082,8 +1082,8 @@ cdef class pAdicZZpXFMElement(pAdicZZpXElement):
 
         If `K` is given then `K` must be a subfield of the parent `L` of
         ``self``, in which case the norm is the relative norm from `L` to `K`.
-        In all other cases, the norm is the absolute norm down to `\mathbb{Q}_p`
-        or `\mathbb{Z}_p`.
+        In all other cases, the norm is the absolute norm down to `\QQ_p`
+        or `\ZZ_p`.
 
         EXAMPLES::
 
@@ -1357,7 +1357,7 @@ cdef class pAdicZZpXFMElement(pAdicZZpXElement):
             [a + (2*a^3 + 2*a^2 + 3*a + 4)*5 + (4*a^3 + 3*a^2 + 3*a + 2)*5^2 + (4*a^2 + 2*a + 2)*5^3, (3*a^3 + 3*a^2 + 2*a + 1) + (a^3 + 4*a^2 + 1)*5 + (a^2 + 4*a + 4)*5^2 + (4*a^2 + a + 3)*5^3, (4*a^3 + 2*a^2 + a + 1) + (2*a^3 + 2*a^2 + 2*a + 4)*5 + (3*a^3 + 2*a^2 + a + 1)*5^2 + (a^3 + a^2 + 2)*5^3, (a^3 + a^2 + a + 4) + (3*a^3 + 1)*5 + (3*a^3 + a + 2)*5^2 + (3*a^3 + 3*a^2 + 3*a + 1)*5^3]
             sage: sum([c * 5^i for i, c in enumerate(E)])
             a
-            sage: all([c^625 == c for c in E])
+            sage: all(c^625 == c for c in E)
             True
 
             sage: S.<x> = ZZ[]
@@ -1375,7 +1375,7 @@ cdef class pAdicZZpXFMElement(pAdicZZpXElement):
              6 + w^3 + 5*w^7]
             sage: sum([w^i*L[i] for i in range(len(L))]) == b
             True
-            sage: all([L[i]^(7^3) == L[i] for i in range(9)])
+            sage: all(L[i]^(7^3) == L[i] for i in range(9))
             True
 
             sage: L = W(3).teichmuller_expansion(); L

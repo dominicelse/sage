@@ -24,13 +24,13 @@ TESTS::
     [0 0]
 """
 
-#*****************************************************************************
+# ****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
-#                  http://www.gnu.org/licenses/
-#*****************************************************************************
+#                  https://www.gnu.org/licenses/
+# ****************************************************************************
 from __future__ import print_function, absolute_import
 from six.moves import range
 from six import iteritems, integer_types
@@ -61,7 +61,6 @@ from . import matrix_mpolynomial_dense
 from sage.misc.superseded import deprecation
 import sage.structure.coerce
 from sage.structure.parent import Parent
-from sage.structure.element import is_Matrix
 from sage.structure.unique_representation import UniqueRepresentation
 import sage.rings.integer as integer
 import sage.rings.number_field.all
@@ -83,8 +82,7 @@ _Fields = Fields()
 
 def is_MatrixSpace(x):
     """
-    Returns True if self is an instance of MatrixSpace returns false if
-    self is not an instance of MatrixSpace
+    Return whether ``self`` is an instance of ``MatrixSpace``.
 
     EXAMPLES::
 
@@ -609,7 +607,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def cardinality(self):
         r"""
-        Return the number of elements in self.
+        Return the number of elements in ``self``.
 
         EXAMPLES::
 
@@ -650,36 +648,6 @@ class MatrixSpace(UniqueRepresentation, Parent):
         """
         default = get_matrix_class(self.base_ring(), self.nrows(), self.ncols(), self.is_sparse(), None)
         return self.Element is default
-
-    def full_category_initialisation(self):
-        """
-        Make full use of the category framework.
-
-        .. NOTE::
-
-            It turns out that it causes a massive speed regression in
-            computations with elliptic curves, if a full initialisation
-            of the category framework of matrix spaces happens at
-            initialisation: The elliptic curves code treats matrix spaces
-            as containers, not as objects of a category. Therefore,
-            making full use of the category framework is now provided by
-            a separate method (see :trac:`11900`).
-
-        EXAMPLES::
-
-            sage: MS = MatrixSpace(QQ,8)
-            sage: TestSuite(MS).run()
-            sage: type(MS)
-            <class 'sage.matrix.matrix_space.MatrixSpace_with_category'>
-            sage: MS.full_category_initialisation()
-            doctest:...: DeprecationWarning: the full_category_initialization
-             method does nothing, as a matrix space now has its category
-             systematically fully initialized
-            See http://trac.sagemath.org/15801 for details.
-        """
-        deprecation(15801, "the full_category_initialization method does nothing,"
-                           " as a matrix space now has its category"
-                           " systematically fully initialized")
 
     @lazy_attribute
     def transposed(self):
@@ -849,7 +817,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def change_ring(self, R):
         """
-        Return matrix space over R with otherwise same parameters as self.
+        Return matrix space over R with otherwise same parameters as ``self``.
 
         INPUT:
 
@@ -914,7 +882,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def _get_action_(self, S, op, self_on_left):
         r"""
-        Return the action of S on self
+        Return the action of S on ``self``.
 
         INPUT:
 
@@ -952,8 +920,10 @@ class MatrixSpace(UniqueRepresentation, Parent):
             sage: V.get_action(ZZ, operator.mul, self_on_left=False)
             Left scalar multiplication by Integer Ring on Full MatrixSpace of 2 by 3 dense matrices over Rational Field
         """
-        if op is operator.mul:
-            try:
+        try:
+            from sage.schemes.generic.algebraic_scheme import AlgebraicScheme
+            from sage.schemes.generic.homset import SchemeHomset_generic
+            if op is operator.mul:
                 from . import action as matrix_action
                 if self_on_left:
                     if is_MatrixSpace(S):
@@ -961,6 +931,8 @@ class MatrixSpace(UniqueRepresentation, Parent):
                         return matrix_action.MatrixMatrixAction(self, S)
                     elif sage.modules.free_module.is_FreeModule(S):
                         return matrix_action.MatrixVectorAction(self, S)
+                    elif isinstance(S, SchemeHomset_generic):
+                        return matrix_action.MatrixPolymapAction(self, S)
                     else:
                         # action of base ring
                         return sage.structure.coerce.RightModuleAction(S, self)
@@ -970,11 +942,13 @@ class MatrixSpace(UniqueRepresentation, Parent):
                         return matrix_action.MatrixMatrixAction(S, self)
                     elif sage.modules.free_module.is_FreeModule(S):
                         return matrix_action.VectorMatrixAction(self, S)
+                    elif isinstance(S, SchemeHomset_generic):
+                        return matrix_action.PolymapMatrixAction(self, S)
                     else:
                         # action of base ring
                         return sage.structure.coerce.LeftModuleAction(S, self)
-            except TypeError:
-                return None
+        except TypeError:
+            return None
 
     def _coerce_map_from_(self, S):
         """
@@ -1136,7 +1110,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def _repr_(self):
         """
-        Returns the string representation of a MatrixSpace
+        Return the string representation of a MatrixSpace.
 
         EXAMPLES::
 
@@ -1181,7 +1155,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def _latex_(self):
         r"""
-        Returns the latex representation of a MatrixSpace
+        Return the latex representation of a MatrixSpace.
 
         EXAMPLES::
 
@@ -1226,7 +1200,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def __iter__(self):
         r"""
-        Returns a generator object which iterates through the elements of
+        Return a generator object which iterates through the elements of
         self. The order in which the elements are generated is based on a
         'weight' of a matrix which is the number of iterations on the base
         ring that are required to reach that matrix.
@@ -1520,7 +1494,6 @@ class MatrixSpace(UniqueRepresentation, Parent):
                 v[r,c].set_immutable()
         from sage.sets.family import Family
         def old_index(i):
-            from sage.misc.superseded import deprecation
             deprecation(22955, "integer indices are deprecated. Use B[r,c] instead of B[i].")
             return v[keys[i]]
         return Family(keys, v.__getitem__,
@@ -1529,7 +1502,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def dimension(self):
         r"""
-        Returns (m rows) \* (n cols) of self as Integer
+        Return (m rows) \* (n cols) of ``self`` as ``Integer``.
 
         EXAMPLES::
 
@@ -1542,7 +1515,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def dims(self):
         """
-        Returns (m row, n col) representation of self dimension
+        Return (m row, n col) representation of ``self`` dimension.
 
         EXAMPLES::
 
@@ -1556,7 +1529,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
     @cached_method
     def identity_matrix(self):
         """
-        Returns the identity matrix in ``self``.
+        Return the identity matrix in ``self``.
 
         ``self`` must be a space of square
         matrices. The returned matrix is immutable. Please use ``copy`` if
@@ -1607,7 +1580,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def is_dense(self):
         """
-        Returns True if matrices in self are dense and False otherwise.
+        Return whether matrices in ``self`` are dense.
 
         EXAMPLES::
 
@@ -1620,7 +1593,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def is_sparse(self):
         """
-        Returns True if matrices in self are sparse and False otherwise.
+        Return whether matrices in ``self`` are sparse.
 
         EXAMPLES::
 
@@ -1633,6 +1606,8 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def is_finite(self):
         """
+        Return whether this matrix space is finite.
+
         EXAMPLES::
 
             sage: MatrixSpace(GF(101), 10000).is_finite()
@@ -1646,7 +1621,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
         """
         Return the n-th generator of this matrix space.
 
-        This doesn't compute all basis matrices, so it is reasonably
+        This does not compute all basis matrices, so it is reasonably
         intelligent.
 
         EXAMPLES::
@@ -1671,7 +1646,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
     @cached_method
     def zero_matrix(self):
         """
-        Returns the zero matrix in ``self``.
+        Return the zero matrix in ``self``.
 
         ``self`` must be a space of square matrices. The returned matrix is
         immutable. Please use ``copy`` if you want a modified copy.
@@ -1706,8 +1681,9 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def ngens(self):
         """
-        Return the number of generators of this matrix space, which is the
-        number of entries in the matrices in this space.
+        Return the number of generators of this matrix space.
+
+        This is the number of entries in the matrices in this space.
 
         EXAMPLES::
 
@@ -1917,7 +1893,7 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def random_element(self, density=None, *args, **kwds):
         """
-        Returns a random element from this matrix space.
+        Return a random element from this matrix space.
 
         INPUT:
 
@@ -2114,16 +2090,16 @@ class MatrixSpace(UniqueRepresentation, Parent):
 
     def _random_nonzero_element(self, *args, **kwds):
         """
-        Return a random non-zero matrix
+        Return a random non-zero matrix.
 
         This function repeatedly calls ``random_element`` until a non-zero
         matrix is obtained.
 
         INPUT:
 
-        - ``*args``, ``**kwds`` - Parameters that can be forwarded to the 
+        - ``*args``, ``**kwds`` - Parameters that can be forwarded to the
           ``random_element`` method
-        
+
         OUTPUT:
 
         - Random non-zero matrix

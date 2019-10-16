@@ -1214,7 +1214,7 @@ class GrowthDiagram(SageObject):
                     return 1
                 elif rule.rank(la) > rule.rank(mu):
                     if is_P_edge is not None and e not in is_P_edge(mu, la):
-                        raise ValueError("%s has smaller rank than %s but there is no edge of color %s in in P" % (mu, la, e))
+                        raise ValueError("%s has smaller rank than %s but there is no edge of color %s in P" % (mu, la, e))
                     return 0
                 else:
                     raise ValueError("can only determine the shape of the growth"
@@ -1265,7 +1265,7 @@ class GrowthDiagram(SageObject):
         """
         half_perimeter = self.half_perimeter()
         if self.rule.has_multiple_edges:
-            if len(labels) % 2 != 1:
+            if not (len(labels) % 2):
                 raise ValueError("only a list of odd length can specify a path, but %s has even length" % len(labels))
             path_length = (len(labels) + 1) / 2
         else:
@@ -2152,7 +2152,7 @@ class RuleShiftedShapes(Rule):
             if content == 0:
                 g, z = 0, x
             elif content == 1:
-                if len(x) == 0:
+                if not x:
                     g, z = 1, _Partitions(x).add_cell(0) # black
                 else:
                     g, z = 2, _Partitions(x).add_cell(0) # blue
@@ -3825,6 +3825,7 @@ class RuleRSK(RulePartitions):
             carry = z[i-1] - max(row1, row3)
             i = i-1
         return (_Partitions(t), carry)
+
 
 class RuleBurge(RulePartitions):
     r"""
